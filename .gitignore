@@ -1,2 +1,6 @@
 test.py
 __pycache__
+bnbML_ArtistBanda.egg-info
+build
+dist
+.eggs
