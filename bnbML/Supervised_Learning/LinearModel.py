@@ -1,5 +1,6 @@
 import numpy as np
 from bnbML.Utils import LossFunctions
+from bnbML.Utils.Plotting import plotLossGraph
 import matplotlib.pyplot as plt
 
 
@@ -43,11 +44,7 @@ class LinearRegression(object):
         return LossFunctions.MSE(y, y_cap)
 
     def plotLossGraph(self):
-        plt.figure()
-        plt.plot(np.arange(self.iter_count), self.history)
-        plt.xlabel('Number of Iterations')
-        plt.ylabel('Loss')
-        plt.show()
+        plotLossGraph(self.history, self.iter_count)
 
     def _initialize_weights(self, input_shape):
         slope = np.zeros((input_shape[1], 1))
