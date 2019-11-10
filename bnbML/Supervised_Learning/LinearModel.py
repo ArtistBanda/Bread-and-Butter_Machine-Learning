@@ -1,22 +1,30 @@
 import numpy as np
 from bnbML.Utils import LossFunctions
 from bnbML.Utils.Plotting import plotLossGraph
+from bnbML.Utils.PreProcessing import normalize
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 class LinearRegression(object):
-    def __init__(self):
-        self.intercept = None
-        self.slope = None
+    def __init__(self, normalize=False):
+        self.weights = None
         self.history = []
         self.iter_count = 0
+        self.normalize = normalize
 
     def fit(self, x_train, y_train, epochs=10, learning_rate=0.01):
-        weights = self._initialize_weights(x_train.shape)
+
+        x_train, y_train = self._checks(x_train, y_train)
+
+        x_train = self._insert_bias(x_train)
+
+        if self.weights is None:
+            self.weights = self._initialize_weights(x_train.shape)
 
         for x in range(epochs):
 
-            y_cap = np.dot(x_train, weights['slope']) + weights['intercept']
+            y_cap = np.dot(x_train, self.weights)
 
             self.history.append(LossFunctions.MSE(y_train, y_cap))
 
@@ -24,29 +32,36 @@ class LinearRegression(object):
                   str(self.history[self.iter_count]))
             self.iter_count += 1
 
-            N = x_train.shape[1]
+            N = x_train.shape[0]
             slope = (1 / N) * (np.dot(x_train.T,
-                                      (np.dot(x_train, weights['slope']) - y_train)))
-            intercept = (1 / N) * (np.dot(x_train, weights['slope']) - y_train)
+                                      (np.dot(x_train, self.weights) - y_train)))
 
-            weights['slope'] = weights['slope'] - learning_rate * slope
-            weights['intercept'] = weights['intercept'] - \
-                learning_rate * intercept
-
-        self.intercept = weights['intercept']
-        self.slope = weights['slope']
+            self.weights = self.weights - learning_rate * slope
 
     def predict(self, x):
-        return np.dot(x, self.slope) + self.intercept
+        x = self._insert_bias(x)
+        return np.dot(x, self.weights)
 
     def score(self, x, y):
-        y_cap = np.dot(x, self.slope) + self.intercept
+        x = self._insert_bias(x)
+        x, y = self._checks(x, y)
+        y_cap = np.dot(x, self.weights)
         return LossFunctions.MSE(y, y_cap)
 
     def plotLossGraph(self):
         plotLossGraph(self.history, self.iter_count)
 
     def _initialize_weights(self, input_shape):
-        slope = np.zeros((input_shape[1], 1))
-        intercept = 0
-        return {'slope': slope, 'intercept': intercept}
+        return np.zeros((input_shape[1], 1))
+
+    def _insert_bias(self, x):
+        return np.insert(x, 0, 1, axis=1)
+
+    def _checks(self, x, y):
+        if y.shape is not tuple((len(y), 1)):
+            y = np.reshape(y, (y.shape[0], 1))
+
+        if self.normalize is True:
+            x = normalize(x)
+
+        return x, y
