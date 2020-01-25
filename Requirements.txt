@@ -1,3 +1,5 @@
 numpy
 pandas
 matplotlib
+seaborn
+progressbar2
