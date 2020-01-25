@@ -4,6 +4,7 @@ from bnbML.Utils.Plotting import plotLossGraph
 from bnbML.Utils.PreProcessing import normalize
 import matplotlib.pyplot as plt
 import pandas as pd
+import progressbar
 
 
 class LinearRegression(object):
@@ -22,14 +23,12 @@ class LinearRegression(object):
         if self.weights is None:
             self.weights = self._initialize_weights(x_train.shape)
 
-        for x in range(epochs):
+        for _ in progressbar.progressbar(range(epochs)):
 
             y_cap = np.dot(x_train, self.weights)
 
             self.history.append(LossFunctions.MSE(y_train, y_cap))
 
-            print('Loss at iter ' + str(x + 1) + ' : ' +
-                  str(self.history[self.iter_count]))
             self.iter_count += 1
 
             N = x_train.shape[0]

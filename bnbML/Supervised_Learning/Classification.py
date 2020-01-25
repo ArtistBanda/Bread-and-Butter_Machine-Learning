@@ -4,6 +4,7 @@ from bnbML.Utils import LossFunctions
 from bnbML.Utils.Metrics import accuracy
 from bnbML.Utils.Plotting import plotLossGraph
 from bnbML.Utils.PreProcessing import normalize
+import progressbar
 
 
 class BinaryLogisticRegression(object):
@@ -21,7 +22,7 @@ class BinaryLogisticRegression(object):
 
         self.weights = self._initialize_weights(x_train.shape)
 
-        for x in range(epochs):
+        for x in progressbar.progressbar(range(epochs)):
 
             y_cap = ActivationFunctions.Sigmoid(
                 np.dot(x_train, self.weights))
@@ -29,8 +30,6 @@ class BinaryLogisticRegression(object):
             self.history.append([LossFunctions.CrossEntropyLoss(
                 y_train, y_cap), accuracy(y_train, y_cap)])
 
-            print('Loss at iter ' + str(x + 1) + ' : ' + str(self.history[self.iter_count][0]) + '  Accuracy at ' + str(
-                x + 1) + ' : ' + str(self.history[self.iter_count][1]))
             self.iter_count += 1
 
             N = x_train.shape[1]
