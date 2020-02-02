@@ -22,7 +22,7 @@ class BinaryLogisticRegression(object):
 
         self.weights = self._initialize_weights(x_train.shape)
 
-        for x in progressbar.progressbar(range(epochs)):
+        for _ in progressbar.progressbar(range(epochs)):
 
             y_cap = ActivationFunctions.Sigmoid(
                 np.dot(x_train, self.weights))
