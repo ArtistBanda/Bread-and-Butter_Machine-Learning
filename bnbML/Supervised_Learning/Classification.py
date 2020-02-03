@@ -30,6 +30,8 @@ class BinaryLogisticRegression(object):
             self.history.append([LossFunctions.CrossEntropyLoss(
                 y_train, y_cap), accuracy(y_train, y_cap)])
 
+            print("Accuracy : " + str(self.history[len(self.history) - 1][1]))
+
             self.iter_count += 1
 
             N = x_train.shape[1]

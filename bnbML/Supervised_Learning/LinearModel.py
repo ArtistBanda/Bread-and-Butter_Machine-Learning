@@ -29,6 +29,8 @@ class LinearRegression(object):
 
             self.history.append(LossFunctions.MSE(y_train, y_cap))
 
+            print("Loss : " + str(self.history[len(self.history) - 1]))
+
             self.iter_count += 1
 
             N = x_train.shape[0]
