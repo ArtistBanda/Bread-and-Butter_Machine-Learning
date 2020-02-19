@@ -5,3 +5,4 @@ bnbML_ArtistBanda.egg-info
 build
 dist
 .eggs
+.vscode
