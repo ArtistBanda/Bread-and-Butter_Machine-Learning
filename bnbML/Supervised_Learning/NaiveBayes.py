@@ -25,13 +25,14 @@ class NaiveBayesClassifier(object):
 
     def predict(self, X):
         y_pred = []
-        for i, _ in enumerate(self.classes):
-            y_pred.append(1)
-            for col, _ in enumerate(self.parameters[i]):
-                print(col)
-                y_pred[i] *= self._conditionalProba(i, col, X)
-            y_pred[i] /= self.class_proba[i]
-            y_pred[i] = np.argmax(y_pred[i])
+        for i, x in enumerate(X):
+            y_pred.append([])
+            for j, _ in enumerate(self.classes):
+                y_pred[i].append(1)
+                for k, _ in enumerate(self.parameters):
+                    y_pred[i][j] *= self._conditionalProba(j, k, x)
+                y_pred[i][j] /= self.class_proba[j]
+            y_pred[i] = self.classes[np.argmax(y_pred[i])]
         return y_pred
 
     def score(self, X, y):
