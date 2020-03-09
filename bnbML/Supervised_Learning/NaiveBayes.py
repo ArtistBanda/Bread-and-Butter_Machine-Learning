@@ -1,4 +1,5 @@
 import numpy as np
+from bnbML.Utils.Metrics import mean_accuracy 
 
 
 class NaiveBayesClassifier(object):
@@ -35,8 +36,9 @@ class NaiveBayesClassifier(object):
             y_pred[i] = self.classes[np.argmax(y_pred[i])]
         return y_pred
 
-    def score(self, X, y):
-        pass
+    def accuracy(self, X, y):
+        y_pred = self.predict(X)
+        return mean_accuracy(y, y_pred)
 
     def _conditionalProba(self, c, feature, x):
         eps = 1e-4
