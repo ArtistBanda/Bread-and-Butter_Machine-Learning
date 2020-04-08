@@ -11,7 +11,7 @@ def Sigmoid(z):
         returns :
         -> numpy array with shape(z) 
     """
-    return 1 / (1 + np.exp(-z))
+    return (1 / (1 + np.exp(-z)), z)
 
 
 def ReLU(z):
@@ -24,7 +24,7 @@ def ReLU(z):
         returns:
         -> numpy array with shape(z)
     """
-    return np.where(z > 0, z, 0)
+    return (np.where(z > 0, z, 0), z)
 
 
 def tanh(z):
@@ -37,4 +37,4 @@ def tanh(z):
         returns :
         -> numpy array with shape(z)
     """
-    return np.tanh(z)
+    return (np.tanh(z), z)
