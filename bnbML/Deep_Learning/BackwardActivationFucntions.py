@@ -10,5 +10,6 @@ def ReLU_backward(dA, cache):
 
 def Sigmoid_backward(dA, cache):
     z = cache
-    signmoid_der = Sigmoid(z) * (1 - Sigmoid(z))
+    sig_z, _ = Sigmoid(z)
+    signmoid_der = sig_z * (1 - sig_z)
     return dA * signmoid_der
