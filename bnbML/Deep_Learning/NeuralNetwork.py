@@ -13,12 +13,17 @@ class NeuralNetwork(object):
         self.metrics = None
 
     def fit(self, X, y, learning_rate, epochs):
-        pass
+        for _ in range(1, epochs):
+            A, caches = self._layers_forward_model(X)
+            grads = self._layers_backward_model(A, y, caches)
+            self._update_parameters(grads, learning_rate)
+            print(LossFunctions.CrossEntropyLoss(y, A))
 
     def add(self, value, layer, activation=None):
         if activation:
             self.layers.append([layer, value, activation])
-        self.layers.append([layer, value])
+        else:
+            self.layers.append([layer, value])
 
     def compile(self, optimizer='sgd', loss='MSE', metrics=['accuracy']):
         self._initialize_parameters()
@@ -48,12 +53,25 @@ class NeuralNetwork(object):
 
         return A, caches
 
+    def _layers_forward_model(self, X):
+        L = len(self.layers)
+        caches = []
+        A = X
+
+        for x in range(1, L):
+            A_prev = A
+            A, cache = self._forward_activation_pass(
+                A_prev, self.parameters['W' + str(x)], self.parameters['b' + str(x)], self.layers[x][2])
+            caches.append(cache)
+
+        return A, caches
+
     def _backward_pass(self, dZ, cache):
         A_prev, W, b = cache
         m = A_prev.shape[1]
 
         dW = np.dot(dZ, A_prev.T) / m
-        db = np.sum(dZ) / m
+        db = np.sum(dZ, axis=1, keepdims=True) / m
         dA_prev = np.dot(W.T, dZ)
 
         assert (dA_prev.shape == A_prev.shape)
@@ -64,16 +82,40 @@ class NeuralNetwork(object):
 
     def _backward_activation_pass(self, dA, caches, activation):
         linear_cache, activation_cache = caches
-        activation = getattr(ActivationFunctions, activation)
         backward_activation = getattr(
-            ActivationFunctions, activation + '_backward')
+            BackwardActivationFucntions, activation + '_backward')
 
         dZ = backward_activation(dA, activation_cache)
         dA_prev, dW, db = self._backward_pass(dZ, linear_cache)
 
         return dA_prev, dW, db
 
-    def _compute_cost(self):
+    def _layers_backward_model(self, AL, Y, caches):
+        L = len(self.layers)
+        Y = Y.reshape(AL.shape)
+        grads = {}
+
+        dA_prev = -(np.divide(Y, AL) - np.divide(1 - Y, 1 - AL))
+
+        for x in range(L - 1, 0, -1):
+            dA_prev, dW, db = self._backward_activation_pass(
+                dA_prev, caches[x - 1], self.layers[x][2])
+            grads['dA' + str(x)] = dA_prev
+            grads['dW' + str(x)] = dW
+            grads['db' + str(x)] = db
+
+        return grads
+
+    def _update_parameters(self, grads, learning_rate):
+        L = len(self.layers)
+
+        for x in range(1, L):
+            self.parameters['W' + str(x)] = self.parameters['W' + str(x)] - \
+                learning_rate * grads['dW' + str(x)]
+            self.parameters['b' + str(x)] = self.parameters['b' + str(x)] - \
+                learning_rate * grads['db' + str(x)]
+
+    def _compute_cost(self, loss):
         pass
 
     def score(self):
