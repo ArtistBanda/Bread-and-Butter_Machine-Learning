@@ -110,10 +110,10 @@ class NeuralNetwork(object):
         L = len(self.layers)
 
         for x in range(1, L):
-            self.parameters['W' + str(x)] = self.parameters['W' + str(x)] - \
-                learning_rate * grads['dW' + str(x)]
-            self.parameters['b' + str(x)] = self.parameters['b' + str(x)] - \
-                learning_rate * grads['db' + str(x)]
+            self.parameters['W' + str(x)] -= learning_rate * \
+                grads['dW' + str(x)]
+            self.parameters['b' + str(x)] -= learning_rate * \
+                grads['db' + str(x)]
 
     def _compute_cost(self, loss):
         pass
