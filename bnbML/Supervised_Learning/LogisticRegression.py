@@ -24,7 +24,7 @@ class BinaryLogisticRegression(object):
 
         for _ in progressbar.progressbar(range(epochs)):
 
-            y_cap = ActivationFunctions.Sigmoid(
+            y_cap, _ = ActivationFunctions.Sigmoid(
                 np.dot(x_train, self.weights))
 
             self.history.append([LossFunctions.CrossEntropyLoss(
@@ -42,7 +42,8 @@ class BinaryLogisticRegression(object):
 
     def predict(self, x):
         x = self._insert_bias(x)
-        return ActivationFunctions.Sigmoid(np.dot(x, self.weights) + self.bias)
+        out, _ = ActivationFunctions.Sigmoid(np.dot(x, self.weights) + self.bias)
+        return out
 
     def plotLossGraph(self):
         plotLossGraph(self.history, self.iter_count)
