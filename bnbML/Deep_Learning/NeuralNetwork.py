@@ -2,6 +2,7 @@ import numpy as np
 from bnbML.Utils import LossFunctions
 from bnbML.Deep_Learning import ActivationFunctions
 from bnbML.Deep_Learning import BackwardActivationFucntions
+import progressbar
 
 
 class NeuralNetwork(object):
@@ -13,11 +14,11 @@ class NeuralNetwork(object):
         self.metrics = None
 
     def fit(self, X, y, learning_rate, epochs):
-        for _ in range(1, epochs):
+        for _ in progressbar.progressbar(range(1, epochs)):
             A, caches = self._layers_forward_model(X)
             grads = self._layers_backward_model(A, y, caches)
             self._update_parameters(grads, learning_rate)
-            print(LossFunctions.CrossEntropyLoss(y, A))
+        print(LossFunctions.CrossEntropyLoss(y, A))
 
     def add(self, value, layer, activation=None):
         if activation:
