@@ -31,6 +31,10 @@ class NeuralNetwork(object):
         self.loss = loss
         self.metrics = metrics
 
+    def predict(self, X):
+        A, _ = self._layers_forward_model(X)
+        return A
+
     def _initialize_parameters(self):
         for i in range(1, len(self.layers)):
             self.parameters['W' +
