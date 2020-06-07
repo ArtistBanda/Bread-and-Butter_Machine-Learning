@@ -8,7 +8,7 @@ setuptools.setup(
     name="bnbML-ArtistBanda",
     version="0.0.1",
     author="Chirag Gomber",
-    author_email="chirag.11gomber4@gmail.com",
+    author_email="chirag.codes@gmail.com",
     description="Python implementations of some of the fundamental Machine Learning models and algorithms from scratch.",
     long_description=long_description,
     long_description_content_type="text/markdown",
