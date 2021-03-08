@@ -2,7 +2,18 @@ import numpy as np
 from bnbML.Deep_Learning import ActivationFunctions, BackwardActivationFucntions
 
 
-class Input(object):
+class Layer(object):
+    def forward_pass(self, A_prev):
+        raise NotImplementedError
+
+    def backward_pass(self, dA, caches):
+        raise NotImplementedError
+
+    def update_parameters(self):
+        pass
+
+
+class Input(Layer):
     def __init__(self, input_shape):
         self.input_shape = input_shape
 
@@ -16,7 +27,7 @@ class Input(object):
         pass
 
 
-class Dense(object):
+class Dense(Layer):
     def __init__(self, units, activation='Linear'):
         self.units = units
         self.activation = activation
@@ -72,7 +83,7 @@ class Dense(object):
 
 # In progress
 
-# class Conv2D(object):
+# class Conv2D(Layer):
 #     def __init__(self):
 #         pass
 
