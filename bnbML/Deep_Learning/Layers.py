@@ -82,16 +82,40 @@ class Dense(Layer):
         self.parameters['b'] -= learning_rate * db
 
 # In progress
+# not working yet
 
-# class Conv2D(Layer):
-#     def __init__(self):
-#         pass
 
-#     def initialize_parameters(self):
-#         pass
+class Conv1D(Layer):
+    def __init__(self, size, units, stride=1, padding=0, activation='ReLU'):
+        self.units = units
+        self.size = size
+        self.stride = stride
+        self.padding = padding
+        self.activation = activation
+        self.parameters = None
 
-#     def forward_pass(self):
-#         pass
+    def initialize_parameters(self):
+        self.parameters = np.random.rand(self.size, self.units)
 
-#     def backward_pass(self):
-#         pass
+    def forward_pass(self, A_prev):
+        activation = getattr(ActivationFunctions, self.activation)
+
+        print(A_prev)
+        print(A_prev.shape[0])
+        Z = np.zeros((A_prev.shape[0] - self.size + 1, self.units))
+        for unit in range(self.units):
+            Z_counter = 0
+            for A_prev_pos in range(0, A_prev.shape[0] - self.size, self.stride):
+                Z[Z_counter, unit] = np.sum(
+                    np.dot(A_prev[A_prev_pos:self.size], self.parameters[:, unit]))
+                Z_counter += 1
+
+        A, activation_cache = activation(Z)
+        linear_cache = A_prev, self.parameters
+
+        caches = (linear_cache, activation_cache)
+
+        return A, caches
+
+    def backward_pass(self):
+        pass
