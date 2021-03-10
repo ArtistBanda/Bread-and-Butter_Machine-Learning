@@ -87,6 +87,16 @@ class Dense(Layer):
 
 class Conv1D(Layer):
     def __init__(self, size, units, stride=1, padding=0, activation='ReLU'):
+        """
+        size -> It is the size of the filter, eg : [1, 1] , then size = 2
+
+        units -> This is the number of filters in the layer, eg : [1, 1], [1, 1] , then untis = 2
+
+        Stride is the size of swipe it will take per operation
+
+        Padding is the number of values added to the left and right of the layer    
+
+        """
         self.units = units
         self.size = size
         self.stride = stride
@@ -95,20 +105,31 @@ class Conv1D(Layer):
         self.parameters = None
 
     def initialize_parameters(self):
-        self.parameters = np.random.rand(self.size, self.units)
+        """
+        It initializes the value of parameters with the size of (untis, size)
+        """
+        self.parameters = np.random.rand(self.units, self.size)
 
     def forward_pass(self, A_prev):
+        """
+        It is one step for forward propagation of a CONV1D layer
+
+        """
         activation = getattr(ActivationFunctions, self.activation)
 
-        print(A_prev)
-        print(A_prev.shape[0])
-        Z = np.zeros((A_prev.shape[0] - self.size + 1, self.units))
+        # Creates the boiler plate for the output to be produced with the size of
+        # (units, n - s + 1)
+        # where n is the number of elements per channel in the input
+        Z = np.zeros((self.units, A_prev.shape[1] - self.size + 1, ))
+
         for unit in range(self.units):
-            Z_counter = 0
-            for A_prev_pos in range(0, A_prev.shape[0] - self.size, self.stride):
-                Z[Z_counter, unit] = np.sum(
-                    np.dot(A_prev[A_prev_pos:self.size], self.parameters[:, unit]))
-                Z_counter += 1
+            # Iterating through all the multiplication checkpoints per filter of the conv1D layer
+            for A_prev_pos in range(0, A_prev.shape[1] - self.size + 1, self.stride):
+
+                # Inserting the value per unit for the particular multiplication checkpoint
+                # Eg : np.dot([[1, 2], [2, 4]],[1, 2]) = [5, 10] Then summing over the output using np.sum()
+                Z[unit, A_prev_pos] = np.sum(
+                    np.dot(A_prev[:, A_prev_pos:A_prev_pos + self.size], self.parameters[unit]))
 
         A, activation_cache = activation(Z)
         linear_cache = A_prev, self.parameters
