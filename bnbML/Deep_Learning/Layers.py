@@ -102,13 +102,14 @@ class Conv1D(Layer):
         self.stride = stride
         self.padding = padding
         self.activation = activation
-        self.parameters = None
+        self.parameters = {}
 
     def initialize_parameters(self):
         """
         It initializes the value of parameters with the size of (untis, size)
         """
-        self.parameters = np.random.rand(self.units, self.size)
+        self.parameters['W'] = np.random.rand(self.units, self.size)
+        self.parameters['b'] = np.zeros((self.units, 1))
 
     def forward_pass(self, A_prev):
         """
@@ -128,8 +129,9 @@ class Conv1D(Layer):
 
                 # Inserting the value per unit for the particular multiplication checkpoint
                 # Eg : np.dot([[1, 2], [2, 4]],[1, 2]) = [5, 10] Then summing over the output using np.sum()
+                print(self.parameters['W'], self.parameters['b'])
                 Z[unit, A_prev_pos] = np.sum(
-                    np.dot(A_prev[:, A_prev_pos:A_prev_pos + self.size], self.parameters[unit]))
+                    np.dot(A_prev[:, A_prev_pos:A_prev_pos + self.size], self.parameters['W'][unit])) + self.parameters['b'][unit]
 
         A, activation_cache = activation(Z)
         linear_cache = A_prev, self.parameters
