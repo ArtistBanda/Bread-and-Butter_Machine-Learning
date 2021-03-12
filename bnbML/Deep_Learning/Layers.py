@@ -14,6 +14,10 @@ class Layer(object):
 
 
 class Input(Layer):
+    """
+    Base class Layer from which all the layers will be derived from
+    """
+
     def __init__(self, input_shape):
         self.input_shape = input_shape
 
@@ -28,6 +32,12 @@ class Input(Layer):
 
 
 class Dense(Layer):
+    """
+    A Dense is one of the most simple layer which is used in Neural Networks.
+    It requires the number of neurons (units) it will have along the activation 
+    function it will use.
+    """
+
     def __init__(self, units, activation='Linear'):
         self.units = units
         self.activation = activation
@@ -39,38 +49,61 @@ class Dense(Layer):
         return self.units
 
     def forward_pass(self, A_prev):
+        """
+        It propagates the layers in forward direction which simply means it multiplies
+        the weights with the provided input, adds bias and applies activation function to it.
+        """
+
         activation = getattr(ActivationFunctions, self.activation)
 
         Z, linear_cache = self._forward_pass_helper(A_prev)
         A, activation_cache = activation(Z)
 
+        # Creates a tuple of linear and activation cache
         caches = (linear_cache, activation_cache)
         return A, caches
 
     def _forward_pass_helper(self, A_prev):
+        """
+        This is a helper function for forward pass which creates linear cache and performs the
+        actual linear propogation (multiplying weights and adding bias)
+        """
         cache = (A_prev, self.parameters['W'], self.parameters['b'])
         Z = np.dot(self.parameters['W'], A_prev) + self.parameters['b']
 
         return Z, cache
 
     def backward_pass(self, dA, caches):
+        """
+        It propagates the layer in backward direction (backpropagation) which is required to update
+        the weights which is ultimately results in reducing the loss.
+        """
+
         linear_cache, activation_cache = caches
         backward_activation = getattr(
             BackwardActivationFucntions, self.activation + '_backward')
 
         dZ = backward_activation(dA, activation_cache)
+
+        # dA_prev is required for the previous layers which are behind this layer
+        # dW and dB are required to update the weights
         dA_prev, dW, db = self._backward_pass_helper(dZ, linear_cache)
 
         return dA_prev, dW, db
 
     def _backward_pass_helper(self, dZ, cache):
+        """
+        This is a helper function for backward pass which does the actual derivative calculation
+        """
         A_prev, W, b = cache
         m = A_prev.shape[1]
 
+        # calculating the derivative and then dividing it over the number of samples
         dW = np.dot(dZ, A_prev.T) / m
         db = np.sum(dZ, axis=1, keepdims=True) / m
         dA_prev = np.dot(W.T, dZ)
 
+        # asserting for correct shapes and dimensions for the derivatives
         assert (dA_prev.shape == A_prev.shape)
         assert (dW.shape == W.shape)
         assert (db.shape == b.shape)
@@ -78,6 +111,11 @@ class Dense(Layer):
         return (dA_prev, dW, db)
 
     def update_parameters(self, dW, db, learning_rate):
+        """
+        Updating the parameters to move towards the global minima of the loss
+        """
+
+        # learning rate multiplied with the derivative of the weights and biases
         self.parameters['W'] -= learning_rate * dW
         self.parameters['b'] -= learning_rate * db
 
@@ -114,7 +152,6 @@ class Conv1D(Layer):
     def forward_pass(self, A_prev):
         """
         It is one step for forward propagation of a CONV1D layer
-
         """
         activation = getattr(ActivationFunctions, self.activation)
 
