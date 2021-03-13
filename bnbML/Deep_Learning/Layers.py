@@ -124,7 +124,7 @@ class Dense(Layer):
 
 
 class Conv1D(Layer):
-    def __init__(self, size, units, stride=1, padding=0, activation='ReLU'):
+    def __init__(self, size, units, stride=1, padding=0, activation='Sigmoid'):
         """
         size -> It is the size of the filter, eg : [1, 1] , then size = 2
 
@@ -158,7 +158,7 @@ class Conv1D(Layer):
         # Creates the boiler plate for the output to be produced with the size of
         # (units, n - s + 1)
         # where n is the number of elements per channel in the input
-        Z = np.zeros((self.units, A_prev.shape[1] - self.size + 1, ))
+        Z = np.zeros((self.units, A_prev.shape[1] - self.size + 1))
 
         for unit in range(self.units):
             # Iterating through all the multiplication checkpoints per filter of the conv1D layer
@@ -177,5 +177,10 @@ class Conv1D(Layer):
 
         return A, caches
 
-    def backward_pass(self):
-        pass
+    def backward_pass(self, dA, caches):
+        linear_cache, activation_cache = caches
+        backward_activation = getattr(
+            BackwardActivationFucntions, self.activation + '_backward')
+
+        dZ = backward_activation(dA, activation_cache)
+        print(dZ)
