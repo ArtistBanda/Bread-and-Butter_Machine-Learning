@@ -119,6 +119,39 @@ class Dense(Layer):
         self.parameters['W'] -= learning_rate * dW
         self.parameters['b'] -= learning_rate * db
 
+
+class Flatten(Layer):
+    """
+    A layer class which reduces the previous layers output (usually a conv layer) into 
+    a straight linear array of size (n, 1)
+    """
+
+    def forward_pass(self, A_prev):
+        """
+        The forward propagator for Flatten array which ravels/flattens the input layer
+        """
+        cache = A_prev
+
+        # converts ndarray of shape (n, m, k ...) to (n+m+k+...., )
+        A = A_prev.flatten()
+        # converts A from shape of (n, ) to (n, 1)
+        A = A.reshape((A.shape, 1))
+
+        return A, cache
+
+    def backward_pass(self, dA, cache):
+        """
+        The backward propagator for Flatten layer which unravels of flattens the
+        derivative of the next layer
+        """
+
+        # reshapes (n, 1) to the shape of the cache which was the input to the
+        # forward pass
+        dA_prev = dA.reshape(cache.shape)
+
+        # None is returned in the place of dW and db
+        return dA_prev, None, None
+
 # In progress
 # not working yet
 
