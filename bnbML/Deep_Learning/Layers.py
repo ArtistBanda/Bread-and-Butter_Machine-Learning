@@ -157,7 +157,7 @@ class Flatten(Layer):
 
 
 class Conv1D(Layer):
-    def __init__(self, size, units, stride=1, padding=0, activation='Sigmoid'):
+    def __init__(self, size, units, stride=1, padding=0, activation='ReLU'):
         """
         size -> It is the size of the filter, eg : [1, 1] , then size = 2
 
@@ -215,5 +215,27 @@ class Conv1D(Layer):
         backward_activation = getattr(
             BackwardActivationFucntions, self.activation + '_backward')
 
-        dZ = backward_activation(dA, activation_cache)
-        print(dZ)
+        A_prev, _ = linear_cache
+
+        # needs to be fixed
+        # dZ = backward_activation(dA, activation_cache)
+        dZ = dA
+
+        dW = np.zeros((self.parameters['W'].shape))
+        db = np.zeros((self.parameters['b'].shape))
+        dA_prev = np.zeros((dZ.shape))
+
+        for unit in range(self.units):
+            db[unit] = np.sum(dZ[unit]) / len(dZ[unit])
+
+            for A_prev_pos in range(0, A_prev.shape[1] - len(dZ[unit]) + 1, self.stride):
+                dW[unit, A_prev_pos] = np.sum(
+                    np.dot(A_prev[:, A_prev_pos:A_prev_pos + len(dZ[unit])], dZ[unit]))
+
+            dZ_padded = np.pad(dZ, (1, 1), 'constant')
+
+            for dZ_pos in range(0, dZ_padded.shape[1] - len(self.parameters['W'][unit]), self.stride):
+                dA_prev[unit] = np.sum(
+                    np.dot(dZ_padded[:, dZ_pos:dZ_pos + len(self.parameters['W'][unit])], dW[unit]))
+
+        return (dA_prev, dW, db)
