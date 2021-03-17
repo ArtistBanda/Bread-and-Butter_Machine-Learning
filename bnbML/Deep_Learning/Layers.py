@@ -152,9 +152,6 @@ class Flatten(Layer):
         # None is returned in the place of dW and db
         return dA_prev, None, None
 
-# In progress
-# not working yet
-
 
 class Conv1D(Layer):
     def __init__(self, size, units, stride=1, padding=0, activation='ReLU'):
@@ -250,3 +247,12 @@ class Conv1D(Layer):
                     np.dot(dZ_padded[:, dZ_pos:dZ_pos + len(self.parameters['W'][unit])], dW[unit]))
 
         return (dA_prev, dW, db)
+
+    def update_parameters(self, dW, db, learning_rate):
+        """
+        Updating the parameters to move towards the global minima of the loss
+        """
+
+        # learning rate multiplied with the derivative of the weights and biases
+        self.parameters['W'] -= learning_rate * dW
+        self.parameters['b'] -= learning_rate * db
