@@ -211,29 +211,40 @@ class Conv1D(Layer):
         return A, caches
 
     def backward_pass(self, dA, caches):
+        """
+        The backward propagator for CONV 1D layer which calculates the matrix / vector derivatives
+        with respect to the incoming derivative from the next layer
+        """
+
+        # Seperating caches
         linear_cache, activation_cache = caches
+        # Extracting function from the string
         backward_activation = getattr(
             BackwardActivationFucntions, self.activation + '_backward')
 
+        # _ are parameters, will update this dependency later
         A_prev, _ = linear_cache
 
-        # needs to be fixed
-        # dZ = backward_activation(dA, activation_cache)
-        dZ = dA
+        # dZ is the derivative with respect to the activation function
+        dZ = backward_activation(dA, activation_cache)
 
         dW = np.zeros((self.parameters['W'].shape))
         db = np.zeros((self.parameters['b'].shape))
         dA_prev = np.zeros((dZ.shape))
 
+        # iterating over the number of filters / channels
         for unit in range(self.units):
+            # db is the sum of dZ averaged out
             db[unit] = np.sum(dZ[unit]) / len(dZ[unit])
 
+            # for dW performing convolution on A_prev and dZ
             for A_prev_pos in range(0, A_prev.shape[1] - len(dZ[unit]) + 1, self.stride):
                 dW[unit, A_prev_pos] = np.sum(
                     np.dot(A_prev[:, A_prev_pos:A_prev_pos + len(dZ[unit])], dZ[unit]))
 
             dZ_padded = np.pad(dZ, (1, 1), 'constant')
 
+            # for dA_prev performing convolution on dZ_padded and dW
             for dZ_pos in range(0, dZ_padded.shape[1] - len(self.parameters['W'][unit]), self.stride):
                 dA_prev[unit] = np.sum(
                     np.dot(dZ_padded[:, dZ_pos:dZ_pos + len(self.parameters['W'][unit])], dW[unit]))
