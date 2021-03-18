@@ -6,6 +6,11 @@ import progressbar
 
 
 class NeuralNetwork(object):
+    """
+    Neural network class which tries to minimise the loss according to the optimiser
+    and takes in different layers from layers module
+    """
+
     def __init__(self):
         self.optimizer = None
         self.parameters = {}
@@ -14,26 +19,46 @@ class NeuralNetwork(object):
         self.metrics = None
 
     def fit(self, X, y, learning_rate, epochs):
+        """
+        It applies the optmizer on the given dataset which first propogates in forward direction
+        and then do backprop for then updating the weights associated
+        """
         for _ in progressbar.progressbar(range(1, epochs)):
+            # each epoch is a complete forward pass and complete backward pass for values of X
+            # !!! Need to add optimizers !!!
             A, caches = self.forward_propagator(X)
             grads = self.backward_propagator(A, y, caches)
             self._update_parameters(grads, learning_rate)
         print(LossFunctions.CrossEntropyLoss(y, A))
 
     def add(self, layer):
+        """
+        Function to add layer from layers module
+        """
         self.layers.append(layer)
 
     def compile(self, optimizer='sgd', loss='MSE', metrics=['accuracy']):
+        """
+        Compile function is used before fitting which is required to define the
+        optimizer, loss and metrics which are required for inference
+        """
         self._initialize_parameters()
         self.optimizer = optimizer
         self.loss = loss
         self.metrics = metrics
 
     def predict(self, X):
+        """
+        Used to calculate the output generated when input goes through the forward propagator
+        """
         A, _ = self.forward_propagator(X)
         return A
 
     def forward_propagator(self, X):
+        """
+        Used to propagate forward through the layers and calculate the output alongside cache 
+        which is required for backward pass
+        """
         L = len(self.layers)
         caches = []
         A = X
@@ -46,6 +71,10 @@ class NeuralNetwork(object):
         return A, caches
 
     def backward_propagator(self, AL, Y, caches):
+        """
+        Used to propagate in backward direction for calculating gradients using layers derivatives
+        which is required for updating parameters
+        """
         L = len(self.layers)
         Y = Y.reshape(AL.shape)
         grads = {}
@@ -61,11 +90,17 @@ class NeuralNetwork(object):
         return grads
 
     def _initialize_parameters(self):
+        """
+        Calls parameter initialising function for all the layers
+        """
         units_prev = self.layers[0].input_shape
         for i in range(1, len(self.layers)):
             units_prev = self.layers[i].initialize_parameters(units_prev)
 
     def _update_parameters(self, grads, learning_rate):
+        """
+        Updates all the parameters for all the layers
+        """
         L = len(self.layers)
 
         for x in range(L):
