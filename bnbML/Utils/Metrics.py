@@ -8,6 +8,7 @@ def accuracy(y_true, y_pred, threshold=0.5):
     acc = (np.sum(correct) / y_true.shape[0]) * 100
     return acc
 
+
 def mean_accuracy(y_true, y_pred):
     acc = np.sum(np.where(y_true == y_pred, 1, 0)) / y_true.shape[0]
     return acc * 100

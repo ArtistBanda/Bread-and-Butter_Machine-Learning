@@ -1,9 +1,9 @@
 import numpy as np
-from bnbML.Utils.Metrics import mean_accuracy 
+from bnbML.Utils.Metrics import mean_accuracy
 
 
 class NaiveBayesClassifier(object):
-    
+
     """
         A Naive Bayes classifier is a probabilistic machine learning
         model that’s used for classification task.
