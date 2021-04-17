@@ -67,6 +67,10 @@ Neural networks are a class of machine learning algorithms used to model complex
 
 [code](bnbML/Deep_Learning/Layers.py)
 
+Base Layer
+
+Bolier plate class which is parent for all layers below.
+
 Input Layer
 
 Holds the data your model will train on. Each neuron in the input layer represents a unique attribute in your dataset (e.g. height, hair color, etc.).
