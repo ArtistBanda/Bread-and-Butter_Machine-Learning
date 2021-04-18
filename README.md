@@ -69,19 +69,28 @@ Neural networks are a class of machine learning algorithms used to model complex
 
 Base Layer
 
-Bolier plate class which is parent for all layers below.
+Bolier plate class which is parent for all layers below. Base class Layer from which all the layers will be derived from
+
 
 Input Layer
 
 Holds the data your model will train on. Each neuron in the input layer represents a unique attribute in your dataset (e.g. height, hair color, etc.).
 
-Hidden Layer
+Dense Layer
+
+A Dense is one of the most simple layer which is used in Neural Networks.
+It requires the number of neurons (units) it will have along the activation 
+function it will use.
+
+Hidden Layers
 
 Sits between the input and output layers and applies an activation function before passing on the results. There are often multiple hidden layers in a network. In traditional networks, hidden layers are typically fully-connected layers — each neuron receives input from all the previous layer’s neurons and sends its output to every neuron in the next layer. This contrasts with how convolutional layers work where the neurons send their output to only some of the neurons in the next layer.
 
-Output Layer
+Output Layers
 
 The final layer in a network. It receives input from the previous hidden layer, optionally applies an activation function, and returns an output representing your model’s prediction.
+
+
 
 [Further Read](https://ml-cheatsheet.readthedocs.io/en/latest/layers.html)
 
