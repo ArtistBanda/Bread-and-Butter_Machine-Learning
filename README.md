@@ -71,7 +71,6 @@ Base Layer
 
 Bolier plate class which is parent for all layers below. Base class Layer from which all the layers will be derived from
 
-
 Input Layer
 
 Holds the data your model will train on. Each neuron in the input layer represents a unique attribute in your dataset (e.g. height, hair color, etc.).
@@ -81,6 +80,12 @@ Dense Layer
 A Dense is one of the most simple layer which is used in Neural Networks.
 It requires the number of neurons (units) it will have along the activation 
 function it will use.
+
+Flatten Layer
+
+A layer class which reduces the previous layers output (usually a conv layer) into 
+a straight linear array of size (n, 1)
+
 
 Hidden Layers
 
