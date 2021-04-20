@@ -67,31 +67,41 @@ Neural networks are a class of machine learning algorithms used to model complex
 
 [code](bnbML/Deep_Learning/Layers.py)
 
-Base Layer
+**Base Layer**
 
 Bolier plate class which is parent for all layers below. Base class Layer from which all the layers will be derived from
 
-Input Layer
+**Input Layer**
 
 Holds the data your model will train on. Each neuron in the input layer represents a unique attribute in your dataset (e.g. height, hair color, etc.).
 
-Dense Layer
+**Dense Layer**
 
 A Dense is one of the most simple layer which is used in Neural Networks.
 It requires the number of neurons (units) it will have along the activation 
 function it will use.
 
-Flatten Layer
+**Flatten Layer**
 
 A layer class which reduces the previous layers output (usually a conv layer) into 
 a straight linear array of size (n, 1)
 
+**Convolutional Layer**
 
-Hidden Layers
+In CNN, a convolution is a linear operation that involves multiplication of weight (kernel/filter) with the input and it does most of the heavy lifting job.
+
+Convolution layer consists of 2 major component 1. Kernel(Filter) 2. Stride
+
+Kernel (Filter): A convolution layer can have more than one filter. The size of the filter should be smaller than the size of input dimension. It is intentional as it allows filter to be applied multiple times at difference point (position) on the input.Filters are helpful in understanding and identifying important features from given input. By applying different filters (more than one filter) on the same input helps in extracting different features from given input. Output from multiplying filter with the input gives Two dimensional array. As such, the output array from this operation is called “Feature Map”.
+Stride: This property controls the movement of filter over input. when the value is set to 1, then filter moves 1 column at a time over input. When the value is set to 2 then the filer jump 2 columns at a time as filter moves over the input.
+
+
+
+**Hidden Layers**
 
 Sits between the input and output layers and applies an activation function before passing on the results. There are often multiple hidden layers in a network. In traditional networks, hidden layers are typically fully-connected layers — each neuron receives input from all the previous layer’s neurons and sends its output to every neuron in the next layer. This contrasts with how convolutional layers work where the neurons send their output to only some of the neurons in the next layer.
 
-Output Layers
+**Output Layers**
 
 The final layer in a network. It receives input from the previous hidden layer, optionally applies an activation function, and returns an output representing your model’s prediction.
 
